@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from collections.abc import AsyncGenerator
 
 import pytest
 
@@ -53,13 +54,13 @@ class StubEmbeddingTransport:
 
 def test_protocol_conformance() -> None:
     transport = StubEmbeddingTransport()
-    selector = EmbeddingToolSelector(transport=transport)  # type: ignore[arg-type]
+    selector = EmbeddingToolSelector(transport=transport)
     assert isinstance(selector, ToolSelector)
 
 
 async def test_returns_all_when_few_tools() -> None:
     transport = StubEmbeddingTransport()
-    selector = EmbeddingToolSelector(transport=transport, top_k=5)  # type: ignore[arg-type]
+    selector = EmbeddingToolSelector(transport=transport, top_k=5)
     tools = [_make_tool(f"t{i}") for i in range(3)]
     messages = [Message(role="user", content=[TextBlock(text="hello")])]
 
@@ -69,7 +70,7 @@ async def test_returns_all_when_few_tools() -> None:
 
 async def test_selects_top_k() -> None:
     transport = StubEmbeddingTransport()
-    selector = EmbeddingToolSelector(transport=transport, top_k=3)  # type: ignore[arg-type]
+    selector = EmbeddingToolSelector(transport=transport, top_k=3)
     tools = [_make_tool(f"tool_{i}", f"description {i}") for i in range(6)]
     messages = [Message(role="user", content=[TextBlock(text="description 0")])]
 
@@ -85,7 +86,7 @@ async def test_pinned_always_included() -> None:
     selector = EmbeddingToolSelector(
         transport=transport,
         top_k=2,
-        pinned=frozenset({"pinned_tool"}),  # type: ignore[arg-type]
+        pinned=frozenset({"pinned_tool"}),
     )
     tools = [
         _make_tool("pinned_tool", "totally unrelated description xyz"),
@@ -103,7 +104,7 @@ async def test_pinned_always_included() -> None:
 
 async def test_returns_all_on_tool_result_iteration() -> None:
     transport = StubEmbeddingTransport()
-    selector = EmbeddingToolSelector(transport=transport, top_k=2)  # type: ignore[arg-type]
+    selector = EmbeddingToolSelector(transport=transport, top_k=2)
     tools = [_make_tool(f"t{i}") for i in range(6)]
     messages = [
         Message(role="user", content=[TextBlock(text="hello")]),
@@ -140,7 +141,7 @@ def test_cosine_similarity_zero_vector() -> None:
 
 async def test_caches_embeddings() -> None:
     transport = StubEmbeddingTransport()
-    selector = EmbeddingToolSelector(transport=transport, top_k=2)  # type: ignore[arg-type]
+    selector = EmbeddingToolSelector(transport=transport, top_k=2)
     tools = [_make_tool(f"t{i}", f"desc {i}") for i in range(4)]
     messages = [Message(role="user", content=[TextBlock(text="query")])]
 
@@ -199,17 +200,17 @@ async def test_filtering_transport_filters_tools() -> None:
     captured_tools: list[list[Tool]] = []
 
     class CapturingTransport:
-        async def _gen(self, events: list[StreamEvent]) -> StreamEvent:
+        async def _gen(self, events: list[StreamEvent]) -> AsyncGenerator[StreamEvent, None]:
             for e in events:
-                yield e  # type: ignore[misc]
+                yield e
 
-        def stream(self, messages: list[Message], tools: list[Tool], system: str):  # type: ignore[no-untyped-def]
+        def stream(self, messages: list[Message], tools: list[Tool], system: str) -> AsyncGenerator[StreamEvent, None]:  # type: ignore[override]
             captured_tools.append(tools)
             return self._gen(make_text_response("ok"))
 
     tools = [_make_tool("a"), _make_tool("b"), _make_tool("c")]
     selector = StubSelector(allowed={"a", "c"})
-    ft = ToolFilteringTransport(CapturingTransport(), selector)  # type: ignore[arg-type]
+    ft = ToolFilteringTransport(CapturingTransport(), selector)
 
     messages = [Message(role="user", content=[TextBlock(text="hello")])]
     events: list[StreamEvent] = []

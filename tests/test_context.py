@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from axio.blocks import TextBlock, ToolResultBlock
 from axio.context import ContextStore, MemoryContextStore, _find_safe_boundary, compact_context
 from axio.messages import Message
@@ -174,7 +176,7 @@ class TestContextStoreABC:
 def _fill_store(store: MemoryContextStore, n: int) -> None:
     """Append *n* user/assistant message pairs to *store* synchronously."""
     for i in range(n):
-        role = "user" if i % 2 == 0 else "assistant"
+        role: Literal["user", "assistant"] = "user" if i % 2 == 0 else "assistant"
         store._history.append(Message(role=role, content=[TextBlock(text=f"msg-{i}")]))
 
 
@@ -199,7 +201,8 @@ class TestCompactContext:
         assert isinstance(messages[0].content[0], TextBlock)
         assert "summary" in messages[0].content[0].text
         assert messages[1].role == "assistant"
-        assert "Understood" in messages[1].content[0].text  # type: ignore[union-attr]
+        assert isinstance(messages[1].content[0], TextBlock)
+        assert "Understood" in messages[1].content[0].text
 
     async def test_compaction_does_not_mutate_original(self) -> None:
         store = MemoryContextStore()

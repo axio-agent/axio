@@ -112,7 +112,7 @@ class TestToDict:
 
     def test_unknown_type_raises(self) -> None:
         with pytest.raises(TypeError, match="Unknown block type"):
-            to_dict(ContentBlock())  # type: ignore[arg-type]
+            to_dict(ContentBlock())  # type: ignore[arg-type, abstract]
 
 
 class TestFromDict:
