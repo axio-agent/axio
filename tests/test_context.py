@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from typing import Literal
 
 from axio.blocks import TextBlock, ToolResultBlock
 from axio.context import ContextStore, MemoryContextStore, _find_safe_boundary, compact_context
 from axio.messages import Message
+from axio.events import StreamEvent
+from axio.messages import Message
 from axio.testing import StubTransport, make_text_response
+from axio.tool import Tool
 
 
 class TestMemoryContextStore:
@@ -240,9 +244,9 @@ class TestCompactContext:
         _fill_store(store, 22)
 
         class FailTransport:
-            def stream(self, *a, **kw):  # type: ignore[no-untyped-def]
+            def stream(self, messages: list[Message], tools: list[Tool], system: str) -> AsyncIterator[StreamEvent]:
                 raise RuntimeError("boom")
 
-        result = await compact_context(store, FailTransport(), max_messages=20, keep_recent=6)  # type: ignore[arg-type, no-untyped-def]
+        result = await compact_context(store, FailTransport(), max_messages=20, keep_recent=6)
         assert result is None
         assert len(await store.get_history()) == 22
