@@ -7,7 +7,6 @@ from typing import Literal
 
 from axio.blocks import TextBlock, ToolResultBlock
 from axio.context import ContextStore, MemoryContextStore, _find_safe_boundary, compact_context
-from axio.messages import Message
 from axio.events import StreamEvent
 from axio.messages import Message
 from axio.testing import StubTransport, make_text_response
