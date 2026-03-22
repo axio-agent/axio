@@ -243,6 +243,6 @@ class TestCompactContext:
             def stream(self, *a, **kw):  # type: ignore[no-untyped-def]
                 raise RuntimeError("boom")
 
-        result = await compact_context(store, FailTransport(), max_messages=20, keep_recent=6)  # type: ignore[arg-type]
+        result = await compact_context(store, FailTransport(), max_messages=20, keep_recent=6)  # type: ignore[arg-type, no-untyped-def]
         assert result is None
         assert len(await store.get_history()) == 22

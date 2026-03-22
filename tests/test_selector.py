@@ -204,7 +204,7 @@ async def test_filtering_transport_filters_tools() -> None:
             for e in events:
                 yield e
 
-        def stream(self, messages: list[Message], tools: list[Tool], system: str) -> AsyncGenerator[StreamEvent, None]:  # type: ignore[override]
+        def stream(self, messages: list[Message], tools: list[Tool], system: str) -> AsyncGenerator[StreamEvent, None]:
             captured_tools.append(tools)
             return self._gen(make_text_response("ok"))
 
