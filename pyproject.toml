@@ -1,12 +1,17 @@
 [project]
 name = "axio"
-version = "0.2.2"
+version = "0.2.3"
 description = "Minimal, streaming-first, protocol-driven foundation for LLM-powered agents"
 readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}
+keywords = ["llm", "agent", "ai", "async", "streaming", "pydantic", "protocol"]
 dependencies = ["pydantic>=2"]
 
+
+[project.urls]
+Homepage = "https://github.com/axio-agent/axio"
+Repository = "https://github.com/axio-agent/axio"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
