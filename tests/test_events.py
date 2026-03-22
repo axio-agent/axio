@@ -1,6 +1,7 @@
 """Tests for axon.events: all stream event types."""
 
 import pytest
+
 from axio.events import (
     Error,
     IterationEnd,

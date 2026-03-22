@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 
 import pytest
+
 from axio.blocks import TextBlock, ToolResultBlock
 from axio.events import StreamEvent, TextDelta
 from axio.messages import Message

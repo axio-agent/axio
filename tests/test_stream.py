@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import AsyncGenerator
 
 import pytest
+
 from axio.events import Error, SessionEndEvent, StreamEvent, TextDelta
 from axio.exceptions import StreamError
 from axio.stream import AgentStream

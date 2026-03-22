@@ -1,6 +1,7 @@
 """Tests for axon.blocks: all content block types."""
 
 import pytest
+
 from axio.blocks import ContentBlock, ImageBlock, TextBlock, ToolResultBlock, ToolUseBlock, from_dict, to_dict
 from axio.messages import Message
 
